@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "aws-scraper"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+selenium = "^4.14.0"
+more-itertools = "^10.1.0"
+pydantic = "^2.4.2"
+sqlalchemy = "1.3.24"
+beautifulsoup4 = "^4.12.2"
+pydantic-settings = "^2.0.3"
+psycopg2-binary = "^2.9.9"
+webdriver-manager = "^4.0.1"
+
+
+[tool.poetry.group.deploy.dependencies]
+aws-cdk-lib = "^2.103.0"
+constructs = "^10.3.0"
+jsii = "^1.91.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

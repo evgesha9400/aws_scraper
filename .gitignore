@@ -1,0 +1,8 @@
+*.cdk.staging
+*cdk.out
+*cdk.context.json
+*.env
+*chrome-linux64/
+*chromedriver-linux64/
+
+*scratch.py

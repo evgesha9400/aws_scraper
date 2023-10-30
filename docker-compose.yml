@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:15.4
+    container_name: "postgres"
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "S3cret"
+      POSTGRES_DB: "postgres"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: scraper_image:latest
+    container_name: "scraper"
+    environment:
+      DATABASE_HOST: "127.0.0.1"
+      DATABASE_USER: "postgres"
+      DATABASE_PASSWORD: "S3cret"
+      DATABASE_NAME: "postgres"
+      DATABASE_PORT: "5432"
+    network_mode: host
+    depends_on:
+      - db
