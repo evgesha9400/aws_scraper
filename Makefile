@@ -26,7 +26,8 @@ migrate:
 up-app:
 	docker compose up app --build
 
-start: export_requirements up-db migrate up-app
+start: up-db migrate up-app
+
 
 stop:
 	docker compose down --remove-orphans
@@ -37,7 +38,7 @@ clean:
 terminal:
 	docker compose run --entrypoint /bin/sh app
 
-deploy:
+deploy export_requirements:
 	cd cdk && cdk deploy
 
 diff:

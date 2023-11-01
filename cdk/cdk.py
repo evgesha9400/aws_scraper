@@ -11,14 +11,9 @@ from aws_cdk import (
     aws_secretsmanager as sm,
     aws_applicationautoscaling as appscaling,
     Stack,
-    RemovalPolicy,
-    CfnOutput
+    RemovalPolicy
 )
 from constructs import Construct
-
-# TODO: Configure on delete for all resources, make sure a delete doesn't leave anything behind
-# TODO: Deploy on a separate VPC and configure public and private subnets
-# TODO: Create a new security group for the database and ECS
 
 
 class ScraperStack(Stack):
@@ -37,7 +32,7 @@ class ScraperStack(Stack):
         )
 
         db_credentials = rds.Credentials.from_generated_secret(
-            "postgres", secret_name=f"{id}DatabaseSecret"
+            "postgres", secret_name=f"{id}RdsSecret"
         )
 
         sm_secret = sm.Secret.from_secret_name_v2(
@@ -100,53 +95,6 @@ class ScraperStack(Stack):
                 hour="12", minute="0"
             ),  # Run at midday every day
             platform_version=ecs.FargatePlatformVersion.LATEST,
-        )
-
-        CfnOutput(
-            self,
-            "VpcIdOutput",
-            value=vpc.vpc_id,
-            description="The VPC ID used for deployment"
-        )
-
-        # 2. Security Group Id and Name
-        CfnOutput(
-            self,
-            "SecurityGroupIdOutput",
-            value=security_group.security_group_id,
-            description="The Security Group ID used for Database and ECS"
-        )
-
-        # 3. Link to Secret in Secret Manager
-        CfnOutput(
-            self,
-            "SecretLinkOutput",
-            value=sm_secret.secret_arn,
-            description="The ARN of the Secret in Secrets Manager that was generated"
-        )
-
-        # 4. Database Name
-        CfnOutput(
-            self,
-            "DatabaseHostOutput",
-            value=db_instance.db_instance_endpoint_address,
-            description="The host of the database that was created"
-        )
-
-        # 5. ECS Cluster name
-        CfnOutput(
-            self,
-            "EcsClusterNameOutput",
-            value=cluster.cluster_name,
-            description="The name of the ECS cluster that was created"
-        )
-
-        # 6. ECS Task definition
-        CfnOutput(
-            self,
-            "EcsTaskDefinitionOutput",
-            value=scheduled_fargate_task.task_definition.task_definition_arn,
-            description="The ARN of the ECS task definition that was created"
         )
 
 

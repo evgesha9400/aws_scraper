@@ -2,6 +2,7 @@
 name = "aws-scraper"
 version = "0.1.0"
 description = ""
+authors = ["Evgeny Aleshin"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -13,7 +14,6 @@ sqlalchemy = "1.3.24"
 beautifulsoup4 = "^4.12.2"
 pydantic-settings = "^2.0.3"
 psycopg2-binary = "^2.9.9"
-webdriver-manager = "^4.0.1"
 
 
 [tool.poetry.group.deploy.dependencies]

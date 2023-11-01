@@ -123,6 +123,12 @@ make terminal
 
 ## Deploy to AWS
 By default the project is deployed using your aws credentials stored in `~/.aws/credentials` and the configuration stored in `~/.aws/config`.
+You can also specify the profile to use by setting the `AWS_PROFILE` environment variable.
+To do initial configuration of the environment run:
+```bash
+cdk bootstrap
+```
+
 Run the following command to deploy the project to AWS:
 ```bash
 make deploy

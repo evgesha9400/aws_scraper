@@ -8,14 +8,10 @@ RUN yum -y update && \
     alsa-lib gtk3 && \
     yum clean all
 
-# Add chrome and chromedriver to PATH so selenium can find them automatically
-ENV PATH="/var/task/src/chrome-linux64:/var/task/src/chromedriver-linux64:${PATH}"
-
 # Install requirements in a separate layer for caching
 COPY ./src/requirements.txt src/
 RUN pip install -r src/requirements.txt
 
 COPY ./src src/
 WORKDIR src
-
 ENTRYPOINT ["python", "index.py"]
