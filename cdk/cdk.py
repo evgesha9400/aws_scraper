@@ -109,6 +109,20 @@ class SeleniumStack(Stack):
             platform_version=ecs.FargatePlatformVersion.LATEST,
         )
 
+        # Ensure that all resources are deleted when the stack is deleted
+        update_policies_to_delete(self)
+
+
+def update_policies_to_delete(stack: Stack):
+    for resource in stack.node.children:
+        if isinstance(resource, cdk.CfnResource):
+            resource.apply_removal_policy(RemovalPolicy.DESTROY)
+            cfn_resource = resource.cfn_options
+            cfn_resource.deletion_policy = cdk.CfnDeletionPolicy.DELETE
+            cfn_resource.update_replace_policy = cdk.CfnDeletionPolicy.DELETE
+        # Check for nested stacks
+        elif isinstance(resource, Stack):
+            update_policies_to_delete(resource)
 
 app = cdk.App()
 env = cdk.Environment(
