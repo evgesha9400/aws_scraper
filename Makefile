@@ -38,7 +38,7 @@ clean:
 terminal:
 	docker compose run --entrypoint /bin/sh app
 
-deploy export_requirements:
+deploy: export_requirements
 	cd cdk && cdk deploy
 
 diff:

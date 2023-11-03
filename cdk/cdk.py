@@ -7,16 +7,17 @@ from aws_cdk import (
     aws_ec2 as ec2,
     aws_rds as rds,
     aws_ecs as ecs,
+    aws_logs as logs,
     aws_ecs_patterns as ecs_patterns,
     aws_secretsmanager as sm,
     aws_applicationautoscaling as appscaling,
     Stack,
-    RemovalPolicy
+    RemovalPolicy,
 )
 from constructs import Construct
 
 
-class ScraperStack(Stack):
+class SeleniumStack(Stack):
     def __init__(self, scope: Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
@@ -81,6 +82,17 @@ class ScraperStack(Stack):
                 "database_name": ecs.Secret.from_secrets_manager(sm_secret, "dbname"),
                 "database_port": ecs.Secret.from_secrets_manager(sm_secret, "port"),
             },
+            log_driver=ecs.LogDrivers.aws_logs(
+                stream_prefix=f"{id}ScheduledFargateTask",
+                mode=ecs.AwsLogDriverMode.NON_BLOCKING,
+                log_group=logs.LogGroup(
+                    self,
+                    f"{id}LogGroup",
+                    log_group_name=f"{id}LogGroup",
+                    removal_policy=RemovalPolicy.DESTROY,
+                    retention=logs.RetentionDays.THREE_MONTHS,
+                ),
+            ),
         )
 
         scheduled_fargate_task = ecs_patterns.ScheduledFargateTask(
@@ -103,5 +115,5 @@ env = cdk.Environment(
     account=os.getenv("CDK_DEFAULT_ACCOUNT"), region=os.getenv("CDK_DEFAULT_REGION")
 )
 
-ScraperStack(app, "Scraper", env=env)
+SeleniumStack(app, "Scraper", env=env)
 app.synth()
