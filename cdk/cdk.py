@@ -21,9 +21,21 @@ class SeleniumStack(Stack):
     def __init__(self, scope: Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
-        vpc = ec2.Vpc.from_lookup(self, f"{id}Vpc", is_default=True)
-        security_group = ec2.SecurityGroup.from_lookup_by_name(
-            self, f"{id}SecurityGroup", security_group_name="default", vpc=vpc,
+        vpc = ec2.Vpc(
+            self,
+            f"{id}Vpc",
+            cidr="10.0.0.0/24",
+            max_azs=1,
+            subnet_configuration=ec2.SubnetConfiguration(
+                subnet_type=ec2.SubnetType.PUBLIC,
+                name="PublicSubnet",
+                cidr_mask=28  # Use a smaller subnet mask for cost savings
+            )
+        )
+
+        security_group = ec2.SecurityGroup(
+            self, "CostReducedSecurityGroup",
+            vpc=vpc
         )
 
         security_group.add_ingress_rule(
@@ -123,6 +135,7 @@ def update_policies_to_delete(stack: Stack):
         # Check for nested stacks
         elif isinstance(resource, Stack):
             update_policies_to_delete(resource)
+
 
 app = cdk.App()
 env = cdk.Environment(
